@@ -10,7 +10,7 @@ using namespace PlayerCc;
 // Constructor for NavModule class.
 // Accepts a pair of doubles to be used as goal coordinates.
 
-Navigator::Navigator(double x, double y) {
+Navigator::Navigator(double x, double y, Position2dProxy &pp) {
 	m_Goal.px = x;
 	m_Goal.py = y;
 	for (int i = 0; i < m_GRID_SIZE; i++) {
@@ -20,6 +20,12 @@ Navigator::Navigator(double x, double y) {
 		}
 	}
 	inputMap(true);
+	// createPlan()
+
+}
+
+void Navigator::createPlan() {
+	
 }
 
 // Method: nextWaypoint

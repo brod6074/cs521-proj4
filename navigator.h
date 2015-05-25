@@ -10,7 +10,7 @@
 
 class Navigator {
 public:
-	Navigator(double x, double y);
+	Navigator(double x, double y, PlayerCc::Position2dProxy &pp);
 	player_pose2d_t nextWaypoint();
 	bool hasWaypoints() { return !m_Waypoints.empty(); } 	
 
@@ -25,6 +25,7 @@ private:
 
 	void inputMap(bool print);
 	void expandMap(int width, int height);
+	void createPlan();
 };
 
 #endif
