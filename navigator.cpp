@@ -10,9 +10,9 @@ using namespace PlayerCc;
 // Constructor for NavModule class.
 // Accepts a pair of doubles to be used as goal coordinates.
 
-Navigator::Navigator(double x, double y, Position2dProxy &pp) {
-	m_Goal.px = x;
-	m_Goal.py = y;
+Navigator::Navigator(Position2dProxy &pp) {
+	m_Goal.px = 0; m_Goal.py = 0; m_Goal.pa = 0;
+
 	for (int i = 0; i < m_GRID_SIZE; i++) {
 		for (int j = 0; j < m_GRID_SIZE; j++) {
 			m_gridMap[i][j] = 0.0;
@@ -20,13 +20,30 @@ Navigator::Navigator(double x, double y, Position2dProxy &pp) {
 		}
 	}
 	inputMap(true);
-	// createPlan()
-
 }
 
-void Navigator::createPlan() {
-	
+bool Navigator::setGoal(double x, double y) {
+	return createPlan(x, y);
 }
+
+bool Navigator::createPlan(double x, double y) {
+	if (!propagateWave(x, y)) {
+		return false;
+	}
+	//extractPath();
+	//smoothPath();
+}
+
+bool Navigator::propagateWave(double x, double y) {
+	// convert to valid grid coordinates
+
+
+	return true;
+}
+
+// extractPath definition here
+
+// smoothPath definition here
 
 // Method: nextWaypoint
 // Returns the next waypoint for the pilot module
@@ -46,6 +63,10 @@ void Navigator::inputMap(bool print) {
 	inFile >> width >> height >> maxVal;
 	cout << "Width = " << width << ", Height = " << height << endl;
 
+	m_Width = width / m_SCALE;
+	m_Height = height / m_SCALE;
+	m_MaxVal = maxVal;
+
 	for (int i = 0; i < height; i++) {
 		for (int j = 0; j < width; j++) {
 			inFile >> nextChar;
@@ -56,28 +77,10 @@ void Navigator::inputMap(bool print) {
 		}
 	}
 
-    cout << "Map input complete.\n";
-
 	expandMap(width, height);
-
+	
 	if (print) {
-		ofstream outFile("scaled_hospital_section.pnm");
-
-		outFile << inputLine1 << endl;
-		outFile << width/m_SCALE << " " << height/m_SCALE << endl
-	      << maxVal << endl;
-
-		for (int i = 0; i < height/m_SCALE; i++) {
-			for (int j = 0; j < width/m_SCALE; j++) {
-				if (m_gridMap[i][j] == 1.0) {
-					outFile << (char) 0;
-				} else {
-					outFile << (char) -1;
-				}
-			}
-		}
-
-		cout << "Scaled map output to file.\n";
+		outputMap();
 	} 
 }
 
@@ -92,6 +95,26 @@ void Navigator::expandMap(int width, int height) {
 			}
 		}
 	}
+}
+
+void Navigator::outputMap() {
+	ofstream outFile("scaled_hospital_section.pnm");
+
+	outFile << "P5" << endl;
+	outFile << m_Width << " " << m_Height << endl
+	    << m_MaxVal << endl;
+
+	for (int i = 0; i < m_Height; i++) {
+		for (int j = 0; j < m_Width; j++) {
+			if (m_gridMap[i][j] == 1.0) {
+				outFile << (char) 0;
+			} else {
+				outFile << (char) -1;
+			}
+		}
+	}
+
+	cout << "Scaled map output to file.\n";
 }
 
 const int Navigator::m_GRID_SIZE;

@@ -10,14 +10,18 @@
 
 class Navigator {
 public:
-	Navigator(double x, double y, PlayerCc::Position2dProxy &pp);
+	Navigator(PlayerCc::Position2dProxy &pp);
 	player_pose2d_t nextWaypoint();
 	bool hasWaypoints() { return !m_Waypoints.empty(); } 	
+	bool setGoal(double x, double y);
 
 private:
 	static const int m_GRID_SIZE = 1000;
 	static const int m_SCALE = 2;
 
+	int m_Width;
+	int m_Height;
+	int m_MaxVal;
 	float m_gridMap[m_GRID_SIZE][m_GRID_SIZE];
 	bool m_gridMarker[m_GRID_SIZE][m_GRID_SIZE];
 	std::queue<player_pose2d_t> m_Waypoints;
@@ -25,7 +29,11 @@ private:
 
 	void inputMap(bool print);
 	void expandMap(int width, int height);
-	void createPlan();
+	void outputMap();
+	bool createPlan(double x, double y);
+	bool propagateWave(double x, double y);
+	// void extractPath();
+	// void smoothPath();
 };
 
 #endif
