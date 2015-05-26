@@ -8,6 +8,13 @@
 // Implementation of the Navigator module. Contains a collection of waypoints
 // to be sent to a Pilot module.
 
+struct Coordinate {
+	Coordinate(int x, int y) : xLoc(x), yLoc(y) {}
+
+	int xLoc;
+	int yLoc;
+};
+
 class Navigator {
 public:
 	Navigator(PlayerCc::Position2dProxy &pp);
@@ -31,9 +38,10 @@ private:
 	void expandMap(int width, int height);
 	void outputMap();
 	bool createPlan(double x, double y);
-	bool propagateWave(double x, double y);
+	bool propagateWave(double goalX, double goalY);
 	// void extractPath();
 	// void smoothPath();
+	void printToText();
 };
 
 #endif
