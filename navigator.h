@@ -23,7 +23,7 @@ public:
 	bool setGoal(player_pose2d_t start, player_pose2d_t goal);
 
 private:
-	static const int m_GRID_SIZE = 1000;
+	static const int m_GRID_SIZE = 800;
 	static const int m_SCALE = 2;
 
 	int m_Width;

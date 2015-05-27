@@ -67,7 +67,7 @@ bool Navigator::propagateWave() {
 		int x = curr.xLoc;
 		int y = curr.yLoc;
 
-		cout << "popped: x = " << x << " , y = " << y << endl;
+		// cout << "popped: x = " << x << " , y = " << y << endl;
 
 		if (x == startX && y == startY) {
 			cout << "goal reached" << endl;
@@ -75,39 +75,83 @@ bool Navigator::propagateWave() {
 			return true;
 		}
 
+		// check if current coordinate is against far left wall
 		if (x != 0) {
 			if (m_gridMap[x - 1][y] == 0) {
 				m_gridMap[x - 1][y] = m_gridMap[x][y] + 1;
 				Coordinate c3(x - 1, y);
 				coordinates.push(c3);
-				cout << "pushing: " << c3.xLoc << " , " << c3.yLoc << endl;
+				// cout << "pushing: " << c3.xLoc << " , " << c3.yLoc << endl;
 			}
 		}
 
+		// check if current coordinate is against far right wall
 		if (x != m_GRID_SIZE - 1) {
 			if (m_gridMap[x + 1][y] == 0) {
 				m_gridMap[x + 1][y] = m_gridMap[x][y] + 1;
 				Coordinate c3(x + 1, y);
 				coordinates.push(c3);
-				cout << "pushing: " << c3.xLoc << " , " << c3.yLoc << endl;
+				// cout << "pushing: " << c3.xLoc << " , " << c3.yLoc << endl;
 			}
 		}
 
+		// check if current coordinate is against top wall
 		if (y != 0) {
 			if (m_gridMap[x][y - 1] == 0) {
 				m_gridMap[x][y - 1] = m_gridMap[x][y] + 1;
 				Coordinate c3(x, y - 1);
 				coordinates.push(c3);
-				cout << "pushing: " << c3.xLoc << " , " << c3.yLoc << endl;
+				// cout << "pushing: " << c3.xLoc << " , " << c3.yLoc << endl;
 			}
 		}
 
+		// check if current coordinate is against bottom wall
 		if (y != m_GRID_SIZE) {
 			if (m_gridMap[x][y + 1] == 0) {
 				m_gridMap[x][y + 1] = m_gridMap[x][y] + 1;
 				Coordinate c3(x, y + 1);
 				coordinates.push(c3);
-				cout << "pushing: " << c3.xLoc << " , " << c3.yLoc << endl;
+				// cout << "pushing: " << c3.xLoc << " , " << c3.yLoc << endl;
+			}
+		}
+
+		// check if current coordinate is in top left corner
+		if (x != 0 && y != 0) {
+			if (m_gridMap[x - 1][y - 1] == 0) {
+				m_gridMap[x - 1][y - 1] = m_gridMap[x][y] + 1;
+				Coordinate c3(x - 1, y - 1);
+				coordinates.push(c3);
+				// cout << "pushing: " << c3.xLoc << " , " << c3.yLoc << endl;
+			}
+		}
+
+		// check if current coordinate is in top right corner
+		if (x != m_GRID_SIZE - 1 && y != 0) {
+			if (m_gridMap[x + 1][y - 1] == 0) {
+				m_gridMap[x + 1][y - 1] = m_gridMap[x][y] + 1;
+				Coordinate c3(x + 1, y - 1);
+				coordinates.push(c3);
+				// cout << "pushing: " << c3.xLoc << " , " << c3.yLoc << endl;
+			}
+		}
+
+		// check if current coordinate is in bottom left corner
+		if (x != 0 && y != m_GRID_SIZE - 1) {
+			if (m_gridMap[x - 1][y + 1] == 0) {
+				m_gridMap[x - 1][y + 1] = m_gridMap[x][y] + 1;
+				Coordinate c3(x - 1, y + 1);
+				coordinates.push(c3);
+				// cout << "pushing: " << c3.xLoc << " , " << c3.yLoc << endl;
+			}
+		}
+
+		// check if current coordinate is in bottom right corner
+		if (x != m_GRID_SIZE - 1 && y != m_GRID_SIZE - 1) {
+			if (m_gridMap[x + 1][y + 1] == 0) {
+				m_gridMap[x + 1][y + 1] = m_gridMap[x][y] + 1;
+				Coordinate c3(x + 1, y + 1);
+				coordinates.push(c3);
+				// cout << "pushing: " << c3.xLoc << " , " << c3.yLoc << endl;
 			}
 		}
 	}
@@ -196,9 +240,9 @@ void Navigator::outputMap() {
 }
 
 void Navigator::printToText() {
-	for (int i = 0; i < 50; i++) {
-		for (int j = 0; j < 50; j++) {
-			cout << setw(3) << m_gridMap[i][j];
+	for (int i = 0; i < m_GRID_SIZE; i++) {
+		for (int j = 0; j < m_GRID_SIZE; j++) {
+			cout << setw(4) << m_gridMap[i][j];
 		}
 		cout << endl;
 	}
