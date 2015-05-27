@@ -1,5 +1,7 @@
 #include <iostream>
+#include <iomanip>
 #include <fstream>
+#include <stack>
 #include <libplayerc++/playerc++.h>
 #include "navigator.h"
 
@@ -9,7 +11,7 @@ using namespace PlayerCc;
 // Method: NavModule
 // Constructor for NavModule class.
 // Accepts a pair of doubles to be used as goal coordinates.
-Navigator::Navigator(Position2dProxy &pp) {
+Navigator::Navigator(Position2dProxy &pp) : startCoord(-1, -1), goalCoord(-1, -1) {
 	m_Goal.px = 0; m_Goal.py = 0; m_Goal.pa = 0;
 
 	// Initialize grid
@@ -22,12 +24,20 @@ Navigator::Navigator(Position2dProxy &pp) {
 	inputMap(true);
 }
 
-bool Navigator::setGoal(double x, double y) {
-	return createPlan(x, y);
+bool Navigator::setGoal(player_pose2d_t start, player_pose2d_t goal) {
+
+	double x, y; // REMOVE THIS
+
+
+	// code for convervsion of player_pose2d_t values to Coordinate values here
+	// the member Coordinate values will be used
+
+
+	return createPlan();
 }
 
-bool Navigator::createPlan(double x, double y) {
-	if (!propagateWave(x, y)) {
+bool Navigator::createPlan() {
+	if (!propagateWave()) {
 		return false;
 	}
 	//extractPath();
@@ -35,11 +45,13 @@ bool Navigator::createPlan(double x, double y) {
 	return true;
 }
 
-bool Navigator::propagateWave(double goalXDbl, double goalYDbl) {
+bool Navigator::propagateWave() {
 	// convert to valid grid coordinates
 
-	int startX = 40;
-	int startY = 94;
+	// int startX = 40;
+	// int startY = 94;
+	int startX = 0;
+	int startY = 0;
 
 	int goalX = 20;
 	int goalY = 20;
@@ -59,6 +71,7 @@ bool Navigator::propagateWave(double goalXDbl, double goalYDbl) {
 
 		if (x == startX && y == startY) {
 			cout << "goal reached" << endl;
+			printToText();
 			return true;
 		}
 
@@ -102,7 +115,11 @@ bool Navigator::propagateWave(double goalXDbl, double goalYDbl) {
 	return false;
 }
 
-// extractPath definition here
+void Navigator::extractPath() {
+	stack<Coordinate> s;
+
+
+}
 
 // smoothPath definition here
 
@@ -179,13 +196,11 @@ void Navigator::outputMap() {
 }
 
 void Navigator::printToText() {
-	ofstream outFile("output.txt");
-
-	for (int i = 0; i < m_Height; i++) {
-		for (int j = 0; j < m_Width; j++) {
-			outFile << m_gridMap[i][j];
+	for (int i = 0; i < 50; i++) {
+		for (int j = 0; j < 50; j++) {
+			cout << setw(3) << m_gridMap[i][j];
 		}
-		outFile << endl;
+		cout << endl;
 	}
 }
 
