@@ -15,8 +15,8 @@ Navigator::Navigator(Position2dProxy &pp) : startCoord(-1, -1), goalCoord(-1, -1
 	m_Goal.px = 0; m_Goal.py = 0; m_Goal.pa = 0;
 
 	// Initialize grid
-	for (int i = 0; i < m_GRID_SIZE; i++) {
-		for (int j = 0; j < m_GRID_SIZE; j++) {
+	for (int i = 0; i < m_GRID_ROWS; i++) {
+		for (int j = 0; j < m_GRID_COLS; j++) {
 			m_gridMap[i][j] = 0.0;
 			m_gridMarker[i][j] = false;
 		}
@@ -86,7 +86,7 @@ bool Navigator::propagateWave() {
 		}
 
 		// check if current coordinate is against far right wall
-		if (x != m_GRID_SIZE - 1) {
+		if (x != m_GRID_COLS - 1) {
 			if (m_gridMap[x + 1][y] == 0) {
 				m_gridMap[x + 1][y] = m_gridMap[x][y] + 1;
 				Coordinate c3(x + 1, y);
@@ -106,7 +106,7 @@ bool Navigator::propagateWave() {
 		}
 
 		// check if current coordinate is against bottom wall
-		if (y != m_GRID_SIZE) {
+		if (y != m_GRID_ROWS) {
 			if (m_gridMap[x][y + 1] == 0) {
 				m_gridMap[x][y + 1] = m_gridMap[x][y] + 1;
 				Coordinate c3(x, y + 1);
@@ -126,7 +126,7 @@ bool Navigator::propagateWave() {
 		}
 
 		// check if current coordinate is in top right corner
-		if (x != m_GRID_SIZE - 1 && y != 0) {
+		if (x != m_GRID_COLS - 1 && y != 0) {
 			if (m_gridMap[x + 1][y - 1] == 0) {
 				m_gridMap[x + 1][y - 1] = m_gridMap[x][y] + 1;
 				Coordinate c3(x + 1, y - 1);
@@ -136,7 +136,7 @@ bool Navigator::propagateWave() {
 		}
 
 		// check if current coordinate is in bottom left corner
-		if (x != 0 && y != m_GRID_SIZE - 1) {
+		if (x != 0 && y != m_GRID_ROWS - 1) {
 			if (m_gridMap[x - 1][y + 1] == 0) {
 				m_gridMap[x - 1][y + 1] = m_gridMap[x][y] + 1;
 				Coordinate c3(x - 1, y + 1);
@@ -146,7 +146,7 @@ bool Navigator::propagateWave() {
 		}
 
 		// check if current coordinate is in bottom right corner
-		if (x != m_GRID_SIZE - 1 && y != m_GRID_SIZE - 1) {
+		if (x != m_GRID_COLS - 1 && y != m_GRID_ROWS - 1) {
 			if (m_gridMap[x + 1][y + 1] == 0) {
 				m_gridMap[x + 1][y + 1] = m_gridMap[x][y] + 1;
 				Coordinate c3(x + 1, y + 1);
@@ -207,8 +207,8 @@ void Navigator::inputMap(bool print) {
 }
 
 void Navigator::expandMap(int width, int height) {
-	for (int i = 1; i < m_GRID_SIZE; i++) {
-		for (int j = 1; j < m_GRID_SIZE; j++) {
+	for (int i = 1; i < m_GRID_ROWS; i++) {
+		for (int j = 1; j < m_GRID_COLS; j++) {
 			if (m_gridMarker[i][j] == true) {
 				m_gridMap[i-1][j] = 1.0;
 				m_gridMap[i+1][j] = 1.0;
@@ -240,13 +240,15 @@ void Navigator::outputMap() {
 }
 
 void Navigator::printToText() {
-	for (int i = 0; i < m_GRID_SIZE; i++) {
-		for (int j = 0; j < m_GRID_SIZE; j++) {
+	for (int i = 0; i < m_GRID_ROWS; i++) {
+		for (int j = 0; j < m_GRID_COLS; j++) {
 			cout << setw(4) << m_gridMap[i][j];
 		}
 		cout << endl;
 	}
 }
 
-const int Navigator::m_GRID_SIZE;
+//const int Navigator::m_GRID_SIZE;
+const int Navigator::m_GRID_ROWS;
+const int Navigator::m_GRID_COLS;
 const int Navigator::m_SCALE;

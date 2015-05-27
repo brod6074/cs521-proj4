@@ -23,14 +23,16 @@ public:
 	bool setGoal(player_pose2d_t start, player_pose2d_t goal);
 
 private:
-	static const int m_GRID_SIZE = 800;
+	//static const int m_GRID_SIZE = 800;
+	static const int m_GRID_ROWS = 250;
+	static const int m_GRID_COLS = 600;
 	static const int m_SCALE = 2;
 
 	int m_Width;
 	int m_Height;
 	int m_MaxVal;
-	float m_gridMap[m_GRID_SIZE][m_GRID_SIZE];
-	bool m_gridMarker[m_GRID_SIZE][m_GRID_SIZE];
+	float m_gridMap[m_GRID_ROWS][m_GRID_COLS];
+	bool m_gridMarker[m_GRID_ROWS][m_GRID_COLS];
 
 	Coordinate startCoord;
 	Coordinate goalCoord;
