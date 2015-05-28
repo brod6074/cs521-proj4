@@ -1,8 +1,9 @@
 #ifndef NAVIGATOR_H
 #define NAVIGATOR_H
 
-#include <libplayerc++/playerc++.h>
 #include <queue>
+
+#include <libplayerc++/playerc++.h>
 
 // Class: NavModule
 // Implementation of the Navigator module. Contains a collection of waypoints
@@ -15,6 +16,7 @@ struct Coordinate {
 	int yLoc;
 };
 
+
 class Navigator {
 public:
 	Navigator(PlayerCc::Position2dProxy &pp);
@@ -23,7 +25,6 @@ public:
 	bool setGoal(player_pose2d_t start, player_pose2d_t goal);
 
 private:
-	//static const int m_GRID_SIZE = 800;
 	static const int m_GRID_ROWS = 250;
 	static const int m_GRID_COLS = 600;
 	static const int m_SCALE = 2;
@@ -34,8 +35,9 @@ private:
 	float m_gridMap[m_GRID_ROWS][m_GRID_COLS];
 	bool m_gridMarker[m_GRID_ROWS][m_GRID_COLS];
 
-	Coordinate startCoord;
-	Coordinate goalCoord;
+	// Start/goal position represented with Coordinate type
+	Coordinate m_StartCoord;
+	Coordinate m_GoalCoord;
 
 	std::queue<player_pose2d_t> m_Waypoints;
 	player_pose2d_t m_Goal;

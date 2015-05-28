@@ -2,7 +2,9 @@
 #include <iomanip>
 #include <fstream>
 #include <stack>
+
 #include <libplayerc++/playerc++.h>
+
 #include "navigator.h"
 
 using namespace std;
@@ -11,7 +13,7 @@ using namespace PlayerCc;
 // Method: NavModule
 // Constructor for NavModule class.
 // Accepts a pair of doubles to be used as goal coordinates.
-Navigator::Navigator(Position2dProxy &pp) : startCoord(-1, -1), goalCoord(-1, -1) {
+Navigator::Navigator(Position2dProxy &pp) : m_StartCoord(-1, -1), m_GoalCoord(-1, -1) {
 	m_Goal.px = 0; m_Goal.py = 0; m_Goal.pa = 0;
 
 	// Initialize grid
@@ -26,12 +28,13 @@ Navigator::Navigator(Position2dProxy &pp) : startCoord(-1, -1), goalCoord(-1, -1
 
 bool Navigator::setGoal(player_pose2d_t start, player_pose2d_t goal) {
 
-	double x, y; // REMOVE THIS
-
-
 	// code for convervsion of player_pose2d_t values to Coordinate values here
 	// the member Coordinate values will be used
 
+	m_StartCoord.xLoc = 0;
+	m_StartCoord.yLoc = 0;
+	m_GoalCoord.xLoc = 20;
+	m_GoalCoord.yLoc = 20;
 
 	return createPlan();
 }
@@ -40,6 +43,7 @@ bool Navigator::createPlan() {
 	if (!propagateWave()) {
 		return false;
 	}
+
 	//extractPath();
 	//smoothPath();
 	return true;
@@ -48,18 +52,9 @@ bool Navigator::createPlan() {
 bool Navigator::propagateWave() {
 	// convert to valid grid coordinates
 
-	// int startX = 40;
-	// int startY = 94;
-	int startX = 0;
-	int startY = 0;
-
-	int goalX = 20;
-	int goalY = 20;
-
 	queue<Coordinate> coordinates;
-	m_gridMap[goalX][goalY] = 2; // mark goal location with 2
-	Coordinate goalCoord(goalX, goalY);
-	coordinates.push(goalCoord); 
+	m_gridMap[m_GoalCoord.xLoc][m_GoalCoord.yLoc] = 2;
+	coordinates.push(m_GoalCoord);
 
 	while (!coordinates.empty()) {
 		Coordinate curr = coordinates.front();
@@ -67,9 +62,7 @@ bool Navigator::propagateWave() {
 		int x = curr.xLoc;
 		int y = curr.yLoc;
 
-		// cout << "popped: x = " << x << " , y = " << y << endl;
-
-		if (x == startX && y == startY) {
+		if (x == m_StartCoord.xLoc && y == m_StartCoord.yLoc) {
 			cout << "goal reached" << endl;
 			printToText();
 			return true;
@@ -81,7 +74,6 @@ bool Navigator::propagateWave() {
 				m_gridMap[x - 1][y] = m_gridMap[x][y] + 1;
 				Coordinate c3(x - 1, y);
 				coordinates.push(c3);
-				// cout << "pushing: " << c3.xLoc << " , " << c3.yLoc << endl;
 			}
 		}
 
@@ -91,7 +83,6 @@ bool Navigator::propagateWave() {
 				m_gridMap[x + 1][y] = m_gridMap[x][y] + 1;
 				Coordinate c3(x + 1, y);
 				coordinates.push(c3);
-				// cout << "pushing: " << c3.xLoc << " , " << c3.yLoc << endl;
 			}
 		}
 
@@ -101,7 +92,6 @@ bool Navigator::propagateWave() {
 				m_gridMap[x][y - 1] = m_gridMap[x][y] + 1;
 				Coordinate c3(x, y - 1);
 				coordinates.push(c3);
-				// cout << "pushing: " << c3.xLoc << " , " << c3.yLoc << endl;
 			}
 		}
 
@@ -111,7 +101,6 @@ bool Navigator::propagateWave() {
 				m_gridMap[x][y + 1] = m_gridMap[x][y] + 1;
 				Coordinate c3(x, y + 1);
 				coordinates.push(c3);
-				// cout << "pushing: " << c3.xLoc << " , " << c3.yLoc << endl;
 			}
 		}
 
@@ -121,7 +110,6 @@ bool Navigator::propagateWave() {
 				m_gridMap[x - 1][y - 1] = m_gridMap[x][y] + 1;
 				Coordinate c3(x - 1, y - 1);
 				coordinates.push(c3);
-				// cout << "pushing: " << c3.xLoc << " , " << c3.yLoc << endl;
 			}
 		}
 
@@ -131,7 +119,6 @@ bool Navigator::propagateWave() {
 				m_gridMap[x + 1][y - 1] = m_gridMap[x][y] + 1;
 				Coordinate c3(x + 1, y - 1);
 				coordinates.push(c3);
-				// cout << "pushing: " << c3.xLoc << " , " << c3.yLoc << endl;
 			}
 		}
 
@@ -141,7 +128,6 @@ bool Navigator::propagateWave() {
 				m_gridMap[x - 1][y + 1] = m_gridMap[x][y] + 1;
 				Coordinate c3(x - 1, y + 1);
 				coordinates.push(c3);
-				// cout << "pushing: " << c3.xLoc << " , " << c3.yLoc << endl;
 			}
 		}
 
@@ -151,7 +137,6 @@ bool Navigator::propagateWave() {
 				m_gridMap[x + 1][y + 1] = m_gridMap[x][y] + 1;
 				Coordinate c3(x + 1, y + 1);
 				coordinates.push(c3);
-				// cout << "pushing: " << c3.xLoc << " , " << c3.yLoc << endl;
 			}
 		}
 	}
