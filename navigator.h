@@ -34,6 +34,7 @@ private:
 	int m_MaxVal;
 	float m_gridMap[m_GRID_ROWS][m_GRID_COLS];
 	bool m_gridMarker[m_GRID_ROWS][m_GRID_COLS];
+	bool m_gridVisited[m_GRID_ROWS][m_GRID_COLS];
 
 	// Start/goal position represented with Coordinate type
 	Coordinate m_StartCoord;

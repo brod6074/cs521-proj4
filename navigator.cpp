@@ -21,6 +21,7 @@ Navigator::Navigator(Position2dProxy &pp) : m_StartCoord(-1, -1), m_GoalCoord(-1
 		for (int j = 0; j < m_GRID_COLS; j++) {
 			m_gridMap[i][j] = 0.0;
 			m_gridMarker[i][j] = false;
+			m_gridVisited[i][j] = false;
 		}
 	}
 	inputMap(true);
@@ -31,8 +32,8 @@ bool Navigator::setGoal(player_pose2d_t start, player_pose2d_t goal) {
 	// code for convervsion of player_pose2d_t values to Coordinate values here
 	// the member Coordinate values will be used
 
-	m_StartCoord.xLoc = 0;
-	m_StartCoord.yLoc = 0;
+	m_StartCoord.xLoc = 30;
+	m_StartCoord.yLoc = 30;
 	m_GoalCoord.xLoc = 20;
 	m_GoalCoord.yLoc = 20;
 
@@ -44,7 +45,7 @@ bool Navigator::createPlan() {
 		return false;
 	}
 
-	//extractPath();
+	extractPath();
 	//smoothPath();
 	return true;
 }
@@ -145,9 +146,92 @@ bool Navigator::propagateWave() {
 }
 
 void Navigator::extractPath() {
-	stack<Coordinate> s;
+	stack<Coordinate> stack;
+	stack.push(m_StartCoord);
+	cout << "value at start:" << m_gridMap[m_StartCoord.xLoc][m_StartCoord.yLoc] << endl;
 
+	while (true) {
+		Coordinate curr = stack.top();
+		stack.pop();
+		int x = curr.xLoc;
+		int y = curr.yLoc;
+		m_gridVisited[x][y] = true;
 
+		// all coordinates between start and goal are on the stack, so stop
+		if (m_gridMap[x][y] == 2) {
+			cout << "Path discovered" << endl;
+			break;
+		}
+
+		// push adjacent vertices that are less than current location by 1 and unvisited
+		while (true) {
+			if (x != 0) {
+				if ((m_gridMap[x-1][y] == m_gridMap[x][y] - 1) && (!m_gridVisited[x-1][y])) {
+					Coordinate c3(x-1, y);
+					stack.push(c3);
+					break;
+				}
+			}
+			if (x != m_GRID_COLS - 1) {
+				if ((m_gridMap[x + 1][y] == m_gridMap[x][y] - 1) && (!m_gridVisited[x+1][y])) {
+					Coordinate c3(x+1, y);
+					stack.push(c3);
+					break;
+				}
+			}
+			if (y != 0) {
+				if ((m_gridMap[x][y-1] == m_gridMap[x][y] - 1) && (!m_gridVisited[x][y-1])) {
+					Coordinate c3(x, y-1);
+					stack.push(c3);
+					break;
+				}
+			}
+			if (y != m_GRID_ROWS - 1) {
+				if ((m_gridMap[x][y+1] == m_gridMap[x][y] - 1) && (!m_gridVisited[x][y+1])) {
+					Coordinate c3(x, y+1);
+					stack.push(c3);
+					break;
+				}
+			}
+			if (x != 0 && y != 0) {
+				if ((m_gridMap[x-1][y-1] == m_gridMap[x][y] - 1) && (!m_gridVisited[x-1][y-1])) {
+					Coordinate c3(x-1, y-1);
+					stack.push(c3);
+					break;
+				}
+			}
+			if (x != m_GRID_ROWS - 1 && y != 0) {
+				if ((m_gridMap[x+1][y-1] == m_gridMap[x][y] - 1) && (!m_gridVisited[x+1][y-1])) {
+					Coordinate c3(x+1, y-1);
+					stack.push(c3);
+					break;
+				}
+			}
+			if (x != 0 && y != m_GRID_ROWS - 1) {
+				if ((m_gridMap[x-1][y+1] == m_gridMap[x][y] - 1) && (!m_gridVisited[x-1][y+1])) {
+					Coordinate c3(x-1, y+1);
+					stack.push(c3);
+					break;
+				}
+			}
+			if (x != m_GRID_COLS - 1 && y != m_GRID_ROWS - 1) {
+				if ((m_gridMap[x+1][y+1] == m_gridMap[x][y] - 1) && (!m_gridVisited[x+1][y+1])) {
+					Coordinate c3(x+1, y+1);
+					stack.push(c3);
+					break;
+				}
+			}
+		}
+	}
+
+	cout << "Coordinates from start: " << m_StartCoord.xLoc << "," << m_StartCoord.yLoc;
+	cout << "  to goal:" << m_GoalCoord.xLoc << "," << m_GoalCoord.yLoc << endl;
+	cout << "stack contents:" << stack.size() << endl;
+	while (!stack.empty()) {
+		Coordinate c = stack.top();
+		stack.pop();
+		cout << "(" << c.xLoc << "," << c.yLoc << ")" << endl;
+	}
 }
 
 // smoothPath definition here
@@ -233,7 +317,6 @@ void Navigator::printToText() {
 	}
 }
 
-//const int Navigator::m_GRID_SIZE;
 const int Navigator::m_GRID_ROWS;
 const int Navigator::m_GRID_COLS;
 const int Navigator::m_SCALE;
