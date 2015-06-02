@@ -32,8 +32,8 @@ bool Navigator::setGoal(player_pose2d_t start, player_pose2d_t goal) {
 	// code for convervsion of player_pose2d_t values to Coordinate values here
 	// the member Coordinate values will be used
 
-	m_StartCoord.xLoc = 30;
-	m_StartCoord.yLoc = 30;
+	m_StartCoord.xLoc = 120;
+	m_StartCoord.yLoc = 100;
 	m_GoalCoord.xLoc = 20;
 	m_GoalCoord.yLoc = 20;
 
@@ -65,7 +65,7 @@ bool Navigator::propagateWave() {
 
 		if (x == m_StartCoord.xLoc && y == m_StartCoord.yLoc) {
 			cout << "goal reached" << endl;
-			printToText();
+			//printToText();
 			return true;
 		}
 
@@ -79,7 +79,7 @@ bool Navigator::propagateWave() {
 		}
 
 		// check if current coordinate is against far right wall
-		if (x != m_GRID_COLS - 1) {
+		if (x != m_GRID_ROWS - 1) {
 			if (m_gridMap[x + 1][y] == 0) {
 				m_gridMap[x + 1][y] = m_gridMap[x][y] + 1;
 				Coordinate c3(x + 1, y);
@@ -97,7 +97,7 @@ bool Navigator::propagateWave() {
 		}
 
 		// check if current coordinate is against bottom wall
-		if (y != m_GRID_ROWS) {
+		if (y != m_GRID_COLS - 1) {
 			if (m_gridMap[x][y + 1] == 0) {
 				m_gridMap[x][y + 1] = m_gridMap[x][y] + 1;
 				Coordinate c3(x, y + 1);
@@ -115,7 +115,7 @@ bool Navigator::propagateWave() {
 		}
 
 		// check if current coordinate is in top right corner
-		if (x != m_GRID_COLS - 1 && y != 0) {
+		if (x != m_GRID_ROWS - 1 && y != 0) {
 			if (m_gridMap[x + 1][y - 1] == 0) {
 				m_gridMap[x + 1][y - 1] = m_gridMap[x][y] + 1;
 				Coordinate c3(x + 1, y - 1);
@@ -124,7 +124,7 @@ bool Navigator::propagateWave() {
 		}
 
 		// check if current coordinate is in bottom left corner
-		if (x != 0 && y != m_GRID_ROWS - 1) {
+		if (x != 0 && y != m_GRID_COLS - 1) {
 			if (m_gridMap[x - 1][y + 1] == 0) {
 				m_gridMap[x - 1][y + 1] = m_gridMap[x][y] + 1;
 				Coordinate c3(x - 1, y + 1);
@@ -133,7 +133,7 @@ bool Navigator::propagateWave() {
 		}
 
 		// check if current coordinate is in bottom right corner
-		if (x != m_GRID_COLS - 1 && y != m_GRID_ROWS - 1) {
+		if (x != m_GRID_ROWS - 1 && y != m_GRID_COLS - 1) {
 			if (m_gridMap[x + 1][y + 1] == 0) {
 				m_gridMap[x + 1][y + 1] = m_gridMap[x][y] + 1;
 				Coordinate c3(x + 1, y + 1);
@@ -141,7 +141,7 @@ bool Navigator::propagateWave() {
 			}
 		}
 	}
-	printToText();
+	//printToText();
 	return false;
 }
 
@@ -151,11 +151,10 @@ void Navigator::extractPath() {
 	cout << "value at start:" << m_gridMap[m_StartCoord.xLoc][m_StartCoord.yLoc] << endl;
 
 	while (true) {
+		cout << "looping" << endl;
 		Coordinate curr = stack.top();
-		stack.pop();
 		int x = curr.xLoc;
 		int y = curr.yLoc;
-		m_gridVisited[x][y] = true;
 
 		// all coordinates between start and goal are on the stack, so stop
 		if (m_gridMap[x][y] == 2) {
@@ -163,64 +162,45 @@ void Navigator::extractPath() {
 			break;
 		}
 
-		// push adjacent vertices that are less than current location by 1 and unvisited
-		while (true) {
-			if (x != 0) {
-				if ((m_gridMap[x-1][y] == m_gridMap[x][y] - 1) && (!m_gridVisited[x-1][y])) {
-					Coordinate c3(x-1, y);
-					stack.push(c3);
-					break;
-				}
-			}
-			if (x != m_GRID_COLS - 1) {
-				if ((m_gridMap[x + 1][y] == m_gridMap[x][y] - 1) && (!m_gridVisited[x+1][y])) {
-					Coordinate c3(x+1, y);
-					stack.push(c3);
-					break;
-				}
-			}
-			if (y != 0) {
-				if ((m_gridMap[x][y-1] == m_gridMap[x][y] - 1) && (!m_gridVisited[x][y-1])) {
-					Coordinate c3(x, y-1);
-					stack.push(c3);
-					break;
-				}
-			}
-			if (y != m_GRID_ROWS - 1) {
-				if ((m_gridMap[x][y+1] == m_gridMap[x][y] - 1) && (!m_gridVisited[x][y+1])) {
-					Coordinate c3(x, y+1);
-					stack.push(c3);
-					break;
-				}
-			}
-			if (x != 0 && y != 0) {
-				if ((m_gridMap[x-1][y-1] == m_gridMap[x][y] - 1) && (!m_gridVisited[x-1][y-1])) {
-					Coordinate c3(x-1, y-1);
-					stack.push(c3);
-					break;
-				}
-			}
-			if (x != m_GRID_ROWS - 1 && y != 0) {
-				if ((m_gridMap[x+1][y-1] == m_gridMap[x][y] - 1) && (!m_gridVisited[x+1][y-1])) {
-					Coordinate c3(x+1, y-1);
-					stack.push(c3);
-					break;
-				}
-			}
-			if (x != 0 && y != m_GRID_ROWS - 1) {
-				if ((m_gridMap[x-1][y+1] == m_gridMap[x][y] - 1) && (!m_gridVisited[x-1][y+1])) {
-					Coordinate c3(x-1, y+1);
-					stack.push(c3);
-					break;
-				}
-			}
-			if (x != m_GRID_COLS - 1 && y != m_GRID_ROWS - 1) {
-				if ((m_gridMap[x+1][y+1] == m_gridMap[x][y] - 1) && (!m_gridVisited[x+1][y+1])) {
-					Coordinate c3(x+1, y+1);
-					stack.push(c3);
-					break;
-				}
-			}
+		if ((x != 0) && (m_gridMap[x-1][y] == m_gridMap[x][y] - 1)) {
+			Coordinate c3(x-1, y);
+			cout << "coordinate pushed" << endl;
+			stack.push(c3);
+		}
+		else if ((x != m_GRID_ROWS - 1) && (m_gridMap[x+1][y] == m_gridMap[x][y] - 1)) {
+			Coordinate c3(x+1, y);
+			cout << "coordinate pushed" << endl;
+			stack.push(c3);
+		}
+		else if ((y != 0) && (m_gridMap[x][y-1] == m_gridMap[x][y] - 1)) {
+			Coordinate c3(x, y-1);
+			cout << "coordinate pushed" << endl;
+			stack.push(c3);
+		}
+		else if ((y != m_GRID_COLS - 1) && (m_gridMap[x][y+1] == m_gridMap[x][y] - 1)) {
+			Coordinate c3(x, y+1);
+			cout << "coordinate pushed" << endl;
+			stack.push(c3);
+		}
+		else if ((x != 0 && y != 0) && (m_gridMap[x-1][y-1] == m_gridMap[x][y] - 1)) {
+			Coordinate c3(x-1, y-1);
+			cout << "coordinate pushed" << endl;
+			stack.push(c3);
+		}
+		else if ((x != m_GRID_ROWS - 1 && y != 0) && (m_gridMap[x+1][y-1] == m_gridMap[x][y] - 1)) {
+			Coordinate c3(x+1, y-1);
+			cout << "coordinate pushed" << endl;
+			stack.push(c3);
+		}
+		else if ((x != 0 && y != m_GRID_COLS - 1) && (m_gridMap[x-1][y+1] == m_gridMap[x][y] - 1)) {
+			Coordinate c3(x-1, y+1);
+			cout << "coordinate pushed" << endl;
+			stack.push(c3);
+		}
+		else if ((x != m_GRID_ROWS - 1 && y != m_GRID_COLS- 1) && (m_gridMap[x+1][y+1] == m_gridMap[x][y] - 1)) {
+			Coordinate c3(x+1, y+1);
+			cout << "coordinate pushed" << endl;
+			stack.push(c3);
 		}
 	}
 
@@ -230,8 +210,10 @@ void Navigator::extractPath() {
 	while (!stack.empty()) {
 		Coordinate c = stack.top();
 		stack.pop();
+		m_gridMap[c.xLoc][c.yLoc] = -7; // for debugging
 		cout << "(" << c.xLoc << "," << c.yLoc << ")" << endl;
 	}
+	printToText();
 }
 
 // smoothPath definition here
