@@ -2,6 +2,7 @@
 #define NAVIGATOR_H
 
 #include <queue>
+#include <stack>
 
 #include <libplayerc++/playerc++.h>
 
@@ -40,8 +41,8 @@ private:
 	Coordinate m_StartCoord;
 	Coordinate m_GoalCoord;
 
-	std::queue<player_pose2d_t> m_Waypoints;
-	player_pose2d_t m_Goal;
+	std::stack<player_pose2d_t> m_Waypoints;
+	// player_pose2d_t m_Goal;
 
 	void inputMap(bool print);
 	void expandMap(int width, int height);
@@ -51,6 +52,8 @@ private:
 	void extractPath();
 	// void smoothPath();
 	void printToText();
+	Coordinate playerPoseToCoordinate(player_pose2d_t pp2d);
+	player_pose2d_t coordinateToPlayerPose(Coordinate coord);
 };
 
 #endif
