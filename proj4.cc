@@ -6,6 +6,7 @@
 #include <libplayerc++/playerc++.h>
 #include <iostream>
 #include "navigator.h"
+#include "pilot.h"
 
 using namespace std;
 using namespace PlayerCc;
@@ -14,7 +15,7 @@ int main() {
 	// Create all neccessary components
 	PlayerClient robot("localhost");
 	Position2dProxy pp(&robot, 0);
-	Navigator navigator(pp);
+	Navigator navigator;
 	Pilot pilot;
 
 	robot.Read();
@@ -37,9 +38,8 @@ int main() {
 
 	while (navigator.hasWaypoints()) {
 		player_pose2d_t next = navigator.nextWaypoint();
-		// cout << "(" << next.px << "," << next.py << ")\n";
 		pilot.setGoal(next);
-		while (!pilot.goalReached()) {
+		while (!pilot.goalReached(pp)) {
 			robot.Read();
 			pp.GoTo(next);
 		}
