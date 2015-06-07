@@ -7,6 +7,7 @@
 #include <iostream>
 #include "navigator.h"
 #include "pilot.h"
+#include "act.h"
 
 using namespace std;
 using namespace PlayerCc;
@@ -16,7 +17,6 @@ int main() {
 	PlayerClient robot("localhost");
 	Position2dProxy pp(&robot, 0);
 	Navigator navigator;
-	Pilot pilot;
 
 	robot.Read();
 	player_pose2d_t start;
@@ -35,15 +35,17 @@ int main() {
 	cout << "Starting coordinate: (" << start.px << "," << start.py << ")\n";
 	cout << "Goal coordinate: (" << goal.px << "," << goal.py << ")\n";
 
-
-	while (navigator.hasWaypoints()) {
-		player_pose2d_t next = navigator.nextWaypoint();
-		pilot.setGoal(next);
-		while (!pilot.goalReached(pp)) {
+	Pilot pilot(navigator.getWaypoints());
+	Act act;
+	while (pilot.hasWaypoints()) {
+		player_pose2d_t next = pilot.getNextWaypoint();
+		act.setGoal(next);
+		while (!act.goalReached(pp)) {
 			robot.Read();
 			pp.GoTo(next);
 		}
 	}
-
+	
+	cout << "Final goal reached!" << endl;
 	return 0;
 }

@@ -200,11 +200,11 @@ void Navigator::extractPath() {
 
 // Method: nextWaypoint
 // Returns the next waypoint for the pilot module
-player_pose2d_t Navigator::nextWaypoint() {
-	player_pose2d_t wp = m_Waypoints.top();
-	m_Waypoints.pop();
-	return wp;
-}
+// player_pose2d_t Navigator::nextWaypoint() {
+// 	player_pose2d_t wp = m_Waypoints.top();
+// 	m_Waypoints.pop();
+// 	return wp;
+// }
 
 void Navigator::inputMap(bool print) {
 	char inputLine1[80], nextChar;

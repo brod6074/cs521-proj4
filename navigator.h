@@ -15,9 +15,8 @@ struct Coordinate {
 class Navigator {
 public:
 	Navigator();
-	player_pose2d_t nextWaypoint();
-	bool hasWaypoints() { return !m_Waypoints.empty(); } 	
 	bool setGoal(player_pose2d_t start, player_pose2d_t goal);
+	std::stack<player_pose2d_t> getWaypoints() { return m_Waypoints; }
 
 private:
 	static const int m_GRID_ROWS = 250;
@@ -31,7 +30,6 @@ private:
 	bool m_gridMarker[m_GRID_ROWS][m_GRID_COLS];
 	bool m_gridVisited[m_GRID_ROWS][m_GRID_COLS];
 
-	// Start/goal position represented with Coordinate type
 	Coordinate m_StartCoord;
 	Coordinate m_GoalCoord;
 
