@@ -1,3 +1,10 @@
+// Programmer:	Roberto Rodriguez
+// Class:		CS 521 - Robotics
+// Project:		4 - Path Planning
+// Due Date:	6/6/2015
+// File: 		navigator.h
+// Purpose: 	Specification of Navigator class
+
 #ifndef NAVIGATOR_H
 #define NAVIGATOR_H
 
@@ -32,7 +39,6 @@ private:
 
 	Coordinate m_StartCoord;
 	Coordinate m_GoalCoord;
-
 	std::stack<player_pose2d_t> m_Waypoints;
 
 	void inputMap(bool print);
@@ -41,7 +47,6 @@ private:
 	bool createPlan();
 	bool propagateWave();
 	void extractPath();
-	// void smoothPath();
 	void printToText();
 	Coordinate playerPoseToCoordinate(player_pose2d_t pp2d);
 	player_pose2d_t coordinateToPlayerPose(Coordinate coord);

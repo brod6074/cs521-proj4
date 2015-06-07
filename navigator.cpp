@@ -1,3 +1,10 @@
+// Programmer:	Roberto Rodriguez
+// Class:		CS 521 - Robotics
+// Project:		4 - Path Planning
+// Due Date:	6/6/2015
+// File: 		navigator.cpp
+// Purpose: 	Implementation of Navigator class
+
 #include <iostream>
 #include <iomanip>
 #include <fstream>
@@ -25,6 +32,9 @@ Navigator::Navigator() : m_StartCoord(-1, -1), m_GoalCoord(-1, -1) {
 	inputMap(true);
 }
 
+// Method: setGoal
+// Returns a boolean value indicating whether or not a desired goal can be reached.
+// If it can, a path is also created.
 bool Navigator::setGoal(player_pose2d_t start, player_pose2d_t goal) {
 	Coordinate startCoord = playerPoseToCoordinate(start);
 	m_StartCoord.xLoc = startCoord.xLoc;
@@ -36,16 +46,20 @@ bool Navigator::setGoal(player_pose2d_t start, player_pose2d_t goal) {
 	return createPlan();
 }
 
+// Method: createPlan
+// Performs wave propagation and returns false if goal can't be reached.
+// A Path is extracted if the goal is reachable.
 bool Navigator::createPlan() {
 	if (!propagateWave()) {
 		return false;
 	}
 
 	extractPath();
-	//smoothPath();
 	return true;
 }
 
+// Method: propagateWave
+// Does wave propagation as described in class
 bool Navigator::propagateWave() {
 	queue<Coordinate> coordinates;
 	m_gridMap[m_GoalCoord.xLoc][m_GoalCoord.yLoc] = 2;
@@ -133,10 +147,11 @@ bool Navigator::propagateWave() {
 			}
 		}
 	}
-	//printToText();
 	return false;
 }
 
+// Method: extractPath
+// Generates the path from the start to the goal
 void Navigator::extractPath() {
 	stack<Coordinate> stack;
 	stack.push(m_StartCoord);
@@ -146,7 +161,6 @@ void Navigator::extractPath() {
 		int x = curr.xLoc;
 		int y = curr.yLoc;
 
-		// all coordinates between start and goal are on the stack, so stop
 		if (m_gridMap[x][y] == 2) {
 			break;
 		}
@@ -195,17 +209,8 @@ void Navigator::extractPath() {
 	// printToText();
 }
 
-// TODO
-// smoothPath definition here
-
-// Method: nextWaypoint
-// Returns the next waypoint for the pilot module
-// player_pose2d_t Navigator::nextWaypoint() {
-// 	player_pose2d_t wp = m_Waypoints.top();
-// 	m_Waypoints.pop();
-// 	return wp;
-// }
-
+// Method: inputMap
+// Used to convert the map to a grid.
 void Navigator::inputMap(bool print) {
 	char inputLine1[80], nextChar;
 	int width, height, maxVal;
@@ -236,19 +241,49 @@ void Navigator::inputMap(bool print) {
 	} 
 }
 
+// Method: expandMap
+// Grows obstacles in the grid map
 void Navigator::expandMap(int width, int height) {
-	for (int i = 1; i < m_GRID_ROWS; i++) {
-		for (int j = 1; j < m_GRID_COLS; j++) {
+	for (int i = 2; i < m_GRID_ROWS; i++) {
+		for (int j = 2; j < m_GRID_COLS; j++) {
 			if (m_gridMarker[i][j] == true) {
 				m_gridMap[i-1][j] = 1.0;
 				m_gridMap[i+1][j] = 1.0;
-				m_gridMap[i][j+1] = 1.0;
 				m_gridMap[i][j-1] = 1.0;
+				m_gridMap[i][j+1] = 1.0;
+
+				m_gridMap[i-1][j-1] = 1.0;
+				m_gridMap[i+1][j-1] = 1.0;
+				m_gridMap[i-1][j+1] = 1.0;
+				m_gridMap[i+1][j+1] = 1.0;
+
+				m_gridMap[i-2][j-2] = 1.0;
+				m_gridMap[i-2][j-1] = 1.0;
+				m_gridMap[i-2][j] = 1.0;
+				m_gridMap[i-2][j+1] = 1.0;
+				m_gridMap[i-2][j+2] = 1.0;
+
+				m_gridMap[i+2][j-2] = 1.0;
+				m_gridMap[i+2][j-1] = 1.0;
+				m_gridMap[i+2][j] = 1.0;
+				m_gridMap[i+2][j+1] = 1.0;
+				m_gridMap[i+2][j+2] = 1.0;
+
+				m_gridMap[i-1][j-1] = 1.0;
+				m_gridMap[i][j-1] = 1.0;
+				m_gridMap[i+1][j-1] = 1.0;
+
+				m_gridMap[i-1][j+1] = 1.0;
+				m_gridMap[i][j+1] = 1.0;
+				m_gridMap[i+1][j+1] = 1.0;
+
 			}
 		}
 	}
 }
 
+// Method: outputMap
+// Outputs the scaled map to another file
 void Navigator::outputMap() {
 	ofstream outFile("scaled_hospital_section.pnm");
 
@@ -269,6 +304,8 @@ void Navigator::outputMap() {
 	cout << "Scaled map output to file.\n";
 }
 
+// Method: printToText
+// Utility method for debugging
 void Navigator::printToText() {
 	for (int i = 0; i < m_GRID_ROWS; i++) {
 		for (int j = 0; j < m_GRID_COLS; j++) {
@@ -278,12 +315,17 @@ void Navigator::printToText() {
 	}
 }
 
+// Method playerPoseToCoordinate
+// Converts coordinates from a player_pose2d_t type to a Coordinate type
 Coordinate Navigator::playerPoseToCoordinate(player_pose2d_t pp2d) {
 	Coordinate coord(-1, -1);
 	coord.xLoc = static_cast<int>((9 - pp2d.py) * 12.2);
 	coord.yLoc = static_cast<int>((20 + pp2d.px) * 13.3);
 	return coord;
 }
+
+// Method playerPoseToCoordinate
+// Converts coordinates from Coordinate type to a player_pose2d_t type 
 
 player_pose2d_t Navigator::coordinateToPlayerPose(Coordinate coord) {
 	player_pose2d_t pp2d;

@@ -1,3 +1,10 @@
+// Programmer:	Roberto Rodriguez
+// Class:		CS 521 - Robotics
+// Project:		4 - Path Planning
+// Due Date:	6/6/2015
+// File: 		pilot.h
+// Purpose: 	Specificaiton of Pilot class
+
 #ifndef PILOT_H
 #define PILOT_H
 
