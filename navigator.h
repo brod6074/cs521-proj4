@@ -1,13 +1,9 @@
 #ifndef NAVIGATOR_H
 #define NAVIGATOR_H
 
-// #include <queue>
 #include <stack>
 #include <libplayerc++/playerc++.h>
 
-// Class: NavModule
-// Implementation of the Navigator module. Contains a collection of waypoints
-// to be sent to a Pilot module.
 
 struct Coordinate {
 	Coordinate(int x, int y) : xLoc(x), yLoc(y) {}
@@ -16,10 +12,9 @@ struct Coordinate {
 	int yLoc;
 };
 
-
 class Navigator {
 public:
-	Navigator(PlayerCc::Position2dProxy &pp);
+	Navigator();
 	player_pose2d_t nextWaypoint();
 	bool hasWaypoints() { return !m_Waypoints.empty(); } 	
 	bool setGoal(player_pose2d_t start, player_pose2d_t goal);
@@ -41,7 +36,6 @@ private:
 	Coordinate m_GoalCoord;
 
 	std::stack<player_pose2d_t> m_Waypoints;
-	// player_pose2d_t m_Goal;
 
 	void inputMap(bool print);
 	void expandMap(int width, int height);

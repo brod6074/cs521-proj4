@@ -15,6 +15,7 @@ int main() {
 	PlayerClient robot("localhost");
 	Position2dProxy pp(&robot, 0);
 	Navigator navigator(pp);
+	Pilot pilot;
 
 	robot.Read();
 	player_pose2d_t start;
@@ -36,7 +37,12 @@ int main() {
 
 	while (navigator.hasWaypoints()) {
 		player_pose2d_t next = navigator.nextWaypoint();
-		cout << "(" << next.px << "," << next.py << ")\n";
+		// cout << "(" << next.px << "," << next.py << ")\n";
+		pilot.setGoal(next);
+		while (!pilot.goalReached()) {
+			robot.Read();
+			pp.GoTo(next);
+		}
 	}
 
 	return 0;
