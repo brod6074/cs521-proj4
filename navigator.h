@@ -1,9 +1,8 @@
 #ifndef NAVIGATOR_H
 #define NAVIGATOR_H
 
-#include <queue>
+// #include <queue>
 #include <stack>
-
 #include <libplayerc++/playerc++.h>
 
 // Class: NavModule

@@ -2,11 +2,13 @@
 #include <iomanip>
 #include <fstream>
 #include <stack>
+#include <queue>
 #include <libplayerc++/playerc++.h>
 #include "navigator.h"
 
 using namespace std;
 using namespace PlayerCc;
+
 
 // Method: NavModule
 // Constructor for NavModule class.

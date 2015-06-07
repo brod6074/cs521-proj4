@@ -2,7 +2,7 @@ CXXFLAGS = `pkg-config --cflags playerc++`
 CFLAGS = `pkg-config --cflags playerc`
 LDLIBS = `pkg-config --libs playerc++`
 CC = g++
-NAME = test
+NAME = proj4
 
 all: 
-	$(CC) $(CXXFLAGS) navigator.cpp test.cc $(LDLIBS) -o $(NAME)
+	$(CC) $(CXXFLAGS) navigator.cpp pilot.cpp proj4.cc $(LDLIBS) -o $(NAME)
